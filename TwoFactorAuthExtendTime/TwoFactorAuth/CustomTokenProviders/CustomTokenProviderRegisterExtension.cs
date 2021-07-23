@@ -11,8 +11,8 @@ namespace TwoFactorAuth.CustomTokenProviders
 		public static IdentityBuilder AddPasswordlessLoginTotpTokenProvider(this IdentityBuilder builder)
 		{
 			var userType = builder.UserType;
-			var totpProvider = typeof(CustomTotpTokenProvider<>).MakeGenericType(userType);
-			//var totpProvider = typeof(StubTotpTokenProvider<>).MakeGenericType(userType);
+			//var totpProvider = typeof(CustomTotpTokenProvider<>).MakeGenericType(userType);
+			var totpProvider = typeof(StubTotpTokenProvider<>).MakeGenericType(userType);
 
 			return builder.AddTokenProvider("CustomTotpTokenProvider", totpProvider);
 		}

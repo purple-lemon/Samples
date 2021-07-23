@@ -14,7 +14,7 @@ namespace TwoFactorAuth.CustomTokenProviders
     public class StubRfc6238AuthenticationService
     {
         private static readonly DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        private static readonly TimeSpan _timestep = TimeSpan.FromMinutes(60);
+        private static readonly TimeSpan _timestep = TimeSpan.FromSeconds(5);
         private static readonly Encoding _encoding = new UTF8Encoding(false, true);
 
         private static int ComputeTotp(HashAlgorithm hashAlgorithm, ulong timestepNumber, string modifier)
@@ -85,7 +85,7 @@ namespace TwoFactorAuth.CustomTokenProviders
             var currentTimeStep = GetCurrentTimeStepNumber();
             using (var hashAlgorithm = new HMACSHA1(securityToken.GetDataNoClone()))
             {
-                for (var i = -2; i <= 2; i++)
+                for (var i = 0; i <= 0; i++)
                 {
                     var computedTotp = ComputeTotp(hashAlgorithm, (ulong)((long)currentTimeStep + i), modifier);
                     if (computedTotp == code)
