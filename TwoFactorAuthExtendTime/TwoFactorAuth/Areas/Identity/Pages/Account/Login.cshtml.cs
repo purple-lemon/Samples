@@ -91,8 +91,26 @@ namespace TwoFactorAuth.Areas.Identity.Pages.Account
                 {
                     var user = await _userManager.FindByEmailAsync(Input.Email);
                     var authenticatorCode = await _userManager.GenerateUserTokenAsync(user, "CustomTotpTokenProvider", "TwoFactor");
-                    Thread.Sleep(5000);
-                    var isValid = await _signInManager.TwoFactorSignInAsync("CustomTotpTokenProvider", authenticatorCode, false, false);
+                    var isValid = await _userManager.VerifyTwoFactorTokenAsync(user, "CustomTotpTokenProvider", authenticatorCode);
+                    string format = "mm:ss:fff";
+                    var step = 100;
+                    var s = Stopwatch.StartNew();
+                    for (var i = 0; i < 20000; i = i + step)
+                    {
+                        isValid = await _userManager.VerifyTwoFactorTokenAsync(user, "CustomTotpTokenProvider", authenticatorCode);
+                        
+                        
+						if (!isValid)
+						{
+                            _logger.LogInformation($"Not valid after time: {s.ElapsedMilliseconds} ms");
+                            break;
+                        } else
+						{
+                            _logger.LogInformation($"Token: {authenticatorCode}, time: {DateTime.Now.ToString(format)}. Is Valid: {isValid}");
+                        }
+                        Thread.Sleep(step);
+                    }
+                    //var isValid = await _signInManager.TwoFactorSignInAsync("CustomTotpTokenProvider", authenticatorCode, false, false);
                     //string format = "mm:ss";
                     //Debug.WriteLine($"Token: {token}, time: {DateTime.Now.ToString(format)}");
                     //Thread.Sleep(5000);

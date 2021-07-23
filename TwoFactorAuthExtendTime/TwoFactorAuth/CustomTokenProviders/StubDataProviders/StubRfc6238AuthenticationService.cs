@@ -10,40 +10,14 @@ using System.Threading.Tasks;
 
 namespace TwoFactorAuth.CustomTokenProviders
 {
-    public sealed class SecurityToken
+
+    public class StubRfc6238AuthenticationService
     {
-        private readonly byte[] _data;
+        private static readonly DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly TimeSpan _timestep = TimeSpan.FromMinutes(60);
+        private static readonly Encoding _encoding = new UTF8Encoding(false, true);
 
-        public SecurityToken(byte[] data)
-        {
-            _data = (byte[])data.Clone();
-        }
-
-        internal byte[] GetDataNoClone()
-        {
-            return _data;
-        }
-    }
-
-    public class CustomRfc6238AuthenticationService
-    {
-        private readonly DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        private readonly TimeSpan _timestep = TimeSpan.FromMinutes(60);
-        private readonly Encoding _encoding = new UTF8Encoding(false, true);
-        public CustomRfc6238AuthenticationService(IConfiguration configuration)
-		{
-            var timeoutString = configuration.GetValue<string>("Authentication:EmailTwoFactorCodeExpireTimeMinutes");
-            if (int.TryParse(timeoutString, out int minutes))
-			{
-                
-                _timestep = TimeSpan.FromMinutes(minutes);
-                _timestep = TimeSpan.FromSeconds(5);
-            }
-        }
-
-        
-
-        private int ComputeTotp(HashAlgorithm hashAlgorithm, ulong timestepNumber, string modifier)
+        private static int ComputeTotp(HashAlgorithm hashAlgorithm, ulong timestepNumber, string modifier)
         {
             // # of 0's = length of pin
             const int mod = 1000000;
@@ -64,7 +38,7 @@ namespace TwoFactorAuth.CustomTokenProviders
             return binaryCode % mod;
         }
 
-        private byte[] ApplyModifier(byte[] input, string modifier)
+        private static byte[] ApplyModifier(byte[] input, string modifier)
         {
             if (String.IsNullOrEmpty(modifier))
             {
@@ -79,13 +53,13 @@ namespace TwoFactorAuth.CustomTokenProviders
         }
 
         // More info: https://tools.ietf.org/html/rfc6238#section-4
-        private ulong GetCurrentTimeStepNumber()
+        private static ulong GetCurrentTimeStepNumber()
         {
             var delta = DateTime.UtcNow - _unixEpoch;
             return (ulong)(delta.Ticks / _timestep.Ticks);
         }
 
-        public int GenerateCode(SecurityToken securityToken, string modifier = null)
+        public static int GenerateCode(SecurityToken securityToken, string modifier = null)
         {
             if (securityToken == null)
             {
@@ -100,7 +74,7 @@ namespace TwoFactorAuth.CustomTokenProviders
             }
         }
 
-        public bool ValidateCode(SecurityToken securityToken, int code, string modifier = null)
+        public static bool ValidateCode(SecurityToken securityToken, int code, string modifier = null)
         {
             if (securityToken == null)
             {
