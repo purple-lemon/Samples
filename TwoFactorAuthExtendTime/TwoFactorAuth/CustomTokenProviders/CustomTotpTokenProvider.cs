@@ -15,10 +15,12 @@ namespace TwoFactorAuth.CustomTokenProviders
 	{
         private CustomRfc6238AuthenticationService rfc6238AuthService;
         private readonly ILogger<CustomTotpTokenProvider<TUser>> _logger;
-        public CustomTotpTokenProvider(CustomRfc6238AuthenticationService rfcService, ILogger<CustomTotpTokenProvider<TUser>> logger) : base()
+        private IConfiguration configuration;
+        public CustomTotpTokenProvider(CustomRfc6238AuthenticationService rfcService, ILogger<CustomTotpTokenProvider<TUser>> logger, IConfiguration config) : base()
 		{
             this.rfc6238AuthService = rfcService;
             _logger = logger;
+            configuration = config;
 
         }
         public override Task<bool> CanGenerateTwoFactorTokenAsync(UserManager<TUser> manager, TUser user)
@@ -28,9 +30,7 @@ namespace TwoFactorAuth.CustomTokenProviders
 
         public override async Task<string> GenerateAsync(string purpose, UserManager<TUser> manager, TUser user)
         {
-            
-           
-            
+
             if (manager == null)
             {
                 throw new ArgumentNullException(nameof(manager));
@@ -38,17 +38,18 @@ namespace TwoFactorAuth.CustomTokenProviders
             var token = await manager.CreateSecurityTokenAsync(user);
             var modifier = await GetUserModifierAsync(purpose, manager, user);
 
-            var totp = new Totp(token, step: 10);
-            //var step = 100;
-            var code = totp.ComputeTotp();
-            //for (var i = 0; i < 20000; i = i + step)
-            //{
-            //    _logger.LogInformation($"{code} Remain: {totp.RemainingSeconds()}");
-            //}
+   //         var totp = new Totp(token, step: 60);
+   //         //var cc = new Hotp(token).ComputeHOTP(1);
+   //         //var step = 100;
+   //         var code = totp.ComputeTotp();
+			////for (var i = 0; i < 20000; i = i + step)
+			////{
+			////    _logger.LogInformation($"{code} Remain: {totp.RemainingSeconds()}");
+			////}
 
-            return code;
+			//return code;
 
-            return rfc6238AuthService.GenerateCode(new SecurityToken(token), modifier).ToString("D6", CultureInfo.InvariantCulture);
+			return  rfc6238AuthService.GenerateCode(new SecurityToken(token), modifier).ToString("D6", CultureInfo.InvariantCulture);
         }
 
         /// </returns>
@@ -65,12 +66,12 @@ namespace TwoFactorAuth.CustomTokenProviders
             }
             var securityToken = await manager.CreateSecurityTokenAsync(user);
 
-            // TOTP
-            var totp = new Totp(securityToken, step: 10);
-            var result = totp.VerifyTotp(token, out long timeStepMatched);
-            return result;
+			// TOTP
+			var totp = new Totp(securityToken, step: 60);
+			var result = totp.VerifyTotp(token, out long timeStepMatched);
+			return result;
 
-            var modifier = await GetUserModifierAsync(purpose, manager, user);
+			var modifier = await GetUserModifierAsync(purpose, manager, user);
             return securityToken != null && rfc6238AuthService.ValidateCode(new SecurityToken(securityToken), code, modifier);
         }
 

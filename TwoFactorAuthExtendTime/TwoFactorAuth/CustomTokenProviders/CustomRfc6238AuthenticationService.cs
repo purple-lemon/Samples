@@ -36,8 +36,8 @@ namespace TwoFactorAuth.CustomTokenProviders
             if (int.TryParse(timeoutString, out int minutes))
 			{
                 
-                _timestep = TimeSpan.FromMinutes(minutes);
-                _timestep = TimeSpan.FromSeconds(5);
+                //_timestep = TimeSpan.FromMinutes(minutes);
+                _timestep = TimeSpan.FromSeconds(60);
             }
         }
 
@@ -111,7 +111,7 @@ namespace TwoFactorAuth.CustomTokenProviders
             var currentTimeStep = GetCurrentTimeStepNumber();
             using (var hashAlgorithm = new HMACSHA1(securityToken.GetDataNoClone()))
             {
-                for (var i = -2; i <= 2; i++)
+                for (var i = 0; i <= 0; i++)
                 {
                     var computedTotp = ComputeTotp(hashAlgorithm, (ulong)((long)currentTimeStep + i), modifier);
                     if (computedTotp == code)

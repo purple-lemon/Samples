@@ -91,38 +91,43 @@ namespace TwoFactorAuth.Areas.Identity.Pages.Account
                 {
                     var user = await _userManager.FindByEmailAsync(Input.Email);
                     var authenticatorCode = await _userManager.GenerateUserTokenAsync(user, "CustomTotpTokenProvider", "TwoFactor");
-                    var isValid = await _userManager.VerifyTwoFactorTokenAsync(user, "CustomTotpTokenProvider", authenticatorCode);
-                    string format = "mm:ss:fff";
-                    var step = 100;
-                    var s = Stopwatch.StartNew();
-                    for (var i = 0; i < 20000; i = i + step)
-                    {
-                        isValid = await _userManager.VerifyTwoFactorTokenAsync(user, "CustomTotpTokenProvider", authenticatorCode);
-                        
-                        
-						if (!isValid)
-						{
-                            _logger.LogInformation($"Not valid after time: {s.ElapsedMilliseconds} ms");
-                            break;
-                        } else
-						{
-                            _logger.LogInformation($"Token: {authenticatorCode}, time: {DateTime.Now.ToString(format)}. Is Valid: {isValid}");
-                        }
-                        Thread.Sleep(step);
-                    }
-                    //var isValid = await _signInManager.TwoFactorSignInAsync("CustomTotpTokenProvider", authenticatorCode, false, false);
-                    //string format = "mm:ss";
-                    //Debug.WriteLine($"Token: {token}, time: {DateTime.Now.ToString(format)}");
-                    //Thread.Sleep(5000);
+                    //var isValid = await _userManager.VerifyTwoFactorTokenAsync(user, "CustomTotpTokenProvider", authenticatorCode);
+     //               string format = "mm:ss:fff";
+     //               var step = 1000;
+     //               var s = Stopwatch.StartNew();
+					//for (var i = 0; i < 62000; i = i + step)
+					//{
+     //                   var isValid = await _userManager.VerifyTwoFactorTokenAsync(user, "CustomTotpTokenProvider", authenticatorCode);
+     //                   var anotherToken = await _userManager.GenerateUserTokenAsync(user, "CustomTotpTokenProvider", "TwoFactor");
 
-                    //Debug.WriteLine($"Token: {token}, time: {DateTime.Now.ToString(format)}. Is Valid: {isValid.Succeeded}");  
-                    //Thread.Sleep(3000);
-                    //isValid = await _signInManager.TwoFactorSignInAsync("CustomTotpTokenProvider", token, false, false);
-                    //Debug.WriteLine($"Token: {token}, time: {DateTime.Now.ToString(format)}. Is Valid: {isValid.Succeeded}");
-                    //Thread.Sleep(3000);
-                    //isValid = await _signInManager.TwoFactorSignInAsync("CustomTotpTokenProvider", token, false, false);
-                    //Debug.WriteLine($"Token: {token}, time: {DateTime.Now.ToString(format)}. Is Valid: {isValid.Succeeded}");
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+     //                   if (!isValid)
+					//	{
+					//		_logger.LogInformation($"Not valid after time: {s.ElapsedMilliseconds} ms. Another: {anotherToken}");
+					//		break;
+					//	}
+					//	else
+					//	{
+					//		_logger.LogInformation($"Token: {authenticatorCode}, time: {DateTime.Now.ToString(format)}. Another: {anotherToken}. Is Valid: {isValid}");
+					//	}
+					//	Thread.Sleep(step);
+					//}
+					//_logger.LogInformation($"Token: {authenticatorCode}, time: {DateTime.Now.ToString(format)}");
+					//Thread.Sleep(3000);
+					//var isValid = await _userManager.VerifyTwoFactorTokenAsync(user, "CustomTotpTokenProvider", authenticatorCode);
+					//_logger.LogInformation($"Token: {authenticatorCode}, time: {DateTime.Now.ToString(format)}. Is Valid: {isValid}");
+					//var isValid = await _signInManager.TwoFactorSignInAsync("CustomTotpTokenProvider", authenticatorCode, false, false);
+					//string format = "mm:ss";
+					//Debug.WriteLine($"Token: {token}, time: {DateTime.Now.ToString(format)}");
+					//Thread.Sleep(5000);
+
+					//Debug.WriteLine($"Token: {token}, time: {DateTime.Now.ToString(format)}. Is Valid: {isValid.Succeeded}");  
+					//Thread.Sleep(3000);
+					//isValid = await _signInManager.TwoFactorSignInAsync("CustomTotpTokenProvider", token, false, false);
+					//Debug.WriteLine($"Token: {token}, time: {DateTime.Now.ToString(format)}. Is Valid: {isValid.Succeeded}");
+					//Thread.Sleep(3000);
+					//isValid = await _signInManager.TwoFactorSignInAsync("CustomTotpTokenProvider", token, false, false);
+					//Debug.WriteLine($"Token: {token}, time: {DateTime.Now.ToString(format)}. Is Valid: {isValid.Succeeded}");
+					return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {

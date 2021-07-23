@@ -12,7 +12,8 @@ namespace TwoFactorAuth.CustomTokenProviders
 		{
 			var userType = builder.UserType;
 			//var totpProvider = typeof(CustomTotpTokenProvider<>).MakeGenericType(userType);
-			var totpProvider = typeof(StubTotpTokenProvider<>).MakeGenericType(userType);
+			//var totpProvider = typeof(StubTotpTokenProvider<>).MakeGenericType(userType);
+			var totpProvider = typeof(CustomEmailTokenProvider<>).MakeGenericType(userType);
 
 			return builder.AddTokenProvider("CustomTotpTokenProvider", totpProvider);
 		}
