@@ -1,0 +1,17 @@
+{
+  "name": "apm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "tsd": "^0.17.0"
+  },
+  "devDependencies": {
+    "@types/angular": "^1.8.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
